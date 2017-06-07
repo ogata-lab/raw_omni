@@ -3,7 +3,7 @@
   <group ns="omni1">
     <node name="omni1" pkg="raw_omni" type="raw_omni" output="screen">
       <param name="omni_name" type="string" value="omni1" />
-      <param name="omni_serial" type="string" value="00000000000" />
+      <param name="omni_serial" type="string" value="50823300018" />
     </node>
 
     <node name="omni1_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">

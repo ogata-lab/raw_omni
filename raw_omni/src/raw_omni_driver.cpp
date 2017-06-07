@@ -120,10 +120,10 @@ enum raw1394_iso_disposition RawOmniDriver::txHandler(raw1394handle_t handle,
 
     // Copy data.
     std::memcpy(data, &omni->tx_iso_buffer_, sizeof(omni->tx_iso_buffer_));
+
     *len = sizeof(omni->tx_iso_buffer_);
     *tag = 0;
     *sy = 0;
-
     return RAW1394_ISO_OK;
 }
 
@@ -351,14 +351,14 @@ bool RawOmniDriver::open()
     }
 
     // Initialize the Tx buffer.
-    tx_iso_buffer_.force_x     = 0x05ff;
+    tx_iso_buffer_.force_x     = 0x07ff;
     tx_iso_buffer_.force_y     = 0x07ff;
     tx_iso_buffer_.force_z     = 0x07ff;
     tx_iso_buffer_.status.bits = 0x53c0;
     tx_iso_buffer_.padding1    = 0x0000;
     tx_iso_buffer_.padding2    = 0x0000;
-    tx_iso_buffer_.status.dock_led0 = 0;
-    tx_iso_buffer_.status.dock_led1 = 1;
+    tx_iso_buffer_.status.dock_led0 = 1;
+    tx_iso_buffer_.status.dock_led1 = 0;
     tx_iso_buffer_.status.force_enabled = 0;
 
     // Reset the pot filter counter.
@@ -469,4 +469,16 @@ std::vector<RawOmniDriver::OmniInfo> RawOmniDriver::enumerate_omnis()
     }
 
     return omnis;
+}
+
+
+void RawOmniDriver::write_raw_effort(const int16_t force_x, const int16_t force_y, const int16_t force_z) {
+  // TODO: Here, force values are written to the IsoTxBuffer struct.
+  // The data may be transmitted by automatically and isochronously.
+  std::cout << "RawOmniDriver::write_raw_effort(" << force_x << ", " << force_y << ", " << force_z << ")" << std::endl;
+  tx_iso_buffer_.force_x = 0x07ff - force_x;
+  tx_iso_buffer_.force_y = 0x07ff - force_y;
+  tx_iso_buffer_.force_z = 0x07ff - force_z;
+  tx_iso_buffer_.status.force_enabled = 1;
+  std::cout << " -- version 0001" << std::endl;
 }

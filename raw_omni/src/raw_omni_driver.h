@@ -169,6 +169,9 @@ public:
     void close();
     bool opened() { return handle_ != NULL; }
     static std::vector<OmniInfo> enumerate_omnis();
+
+
+    void write_raw_effort(const int16_t force_x, const int16_t force_y, const int16_t force_z);
 };
 
 #endif

@@ -19,6 +19,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
+#include <std_msgs/Int16MultiArray.h>
 #include <geometry_msgs/PoseStamped.h>
 
 #include "raw_omni_driver.h"
@@ -30,6 +31,7 @@ private:
     RawOmniDriver driver_;
 
     ros::Publisher joint_pub_;
+    ros::Subscriber effort_sub_;
     sensor_msgs::JointState joint_state_;
 
     ros::Publisher pose_pub_;
@@ -37,6 +39,14 @@ private:
 
     ros::Timer timer_;
 
+public:
+  void effortCallback(const std_msgs::Int16MultiArray::ConstPtr &msg) {
+    std::cout << "Msg is arrived." << std::endl;
+    if (msg->data.size() >= 3) {
+      driver_.write_raw_effort(msg->data[0], msg->data[1], msg->data[2]);
+    }
+
+  }
 public:
     RawOmniNode(const std::string& name, const std::string& serial)
             : name_(name), driver_(serial)
@@ -69,6 +79,10 @@ public:
 
             pose_stamped_.header.frame_id = name_ + "_stylus";
         }
+
+	{
+	  effort_sub_ = n.subscribe("effort", 1000, &RawOmniNode::effortCallback, this);
+	}
 
         // Create timer for communication.
         timer_ = n.createTimer(ros::Duration(0.0025),
