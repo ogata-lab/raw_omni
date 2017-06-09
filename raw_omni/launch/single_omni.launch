@@ -12,7 +12,7 @@
       <remap from="robot_description" to="omni1_description" />
     </node>
 
-    <node pkg="tf" type="static_transform_publisher" name="omni1_sensable_publisher" args="-0.17 0 0.1 -1.57 0 1.57 omni1_base omni1_sensable 100" />
+    <node pkg="tf" type="static_transform_publisher" name="omni1_sensable_publisher" args="0 0 0 -1.57 0 1.57 omni1_base omni1_sensable 100" />
     <node pkg="tf" type="static_transform_publisher" name="omni1_base_publisher" args="0 0 0 0 0 0 map omni1_base 100" />
   </group>
 

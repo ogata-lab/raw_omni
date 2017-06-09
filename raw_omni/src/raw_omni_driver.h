@@ -24,6 +24,7 @@
 #include <pthread.h>
 
 
+const float max_force = 3.3; // [N]
 const float max_force_x = 3.3; // [N]
 const float max_force_y = 3.3; // [N]
 const float max_force_z = 3.3; // [N]
