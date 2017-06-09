@@ -485,5 +485,5 @@ void RawOmniDriver::enableForce(const bool flag) {
 }
 
 void RawOmniDriver::setForce(const float x, const float y, const float z) {
-  this->write_raw_effort(x * force_offset_, y * force_offset_, z * force_offset_);
+  this->write_raw_effort(x * force_offset_ / max_force_x, y * force_offset_ / max_force_y, z * force_offset_ / max_force_z);
 }

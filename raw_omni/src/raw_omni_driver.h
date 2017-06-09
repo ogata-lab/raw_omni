@@ -24,6 +24,10 @@
 #include <pthread.h>
 
 
+const float32 max_force_x = 3.3; // [N]
+const float32 max_force_y = 3.3; // [N]
+const float32 max_force_z = 3.3; // [N]
+
 const int16_t force_offset_ = 0x07FF;
 inline int16_t force_min_max(int16_t v) {
   return ((v > force_offset_) ? force_offset_ : ((v) < -force_offset_)? -force_offset_ : (v));
