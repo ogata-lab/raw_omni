@@ -22,6 +22,8 @@
 #include <std_msgs/Int16MultiArray.h>
 #include <geometry_msgs/PoseStamped.h>
 
+#include "raw_omni/OmniCommand.h"
+
 #include "raw_omni_driver.h"
 
 class RawOmniNode {
@@ -31,7 +33,7 @@ private:
     RawOmniDriver driver_;
 
     ros::Publisher joint_pub_;
-    ros::Subscriber effort_sub_;
+    ros::Subscriber force_sub_;
     sensor_msgs::JointState joint_state_;
 
     ros::Publisher pose_pub_;
@@ -40,12 +42,10 @@ private:
     ros::Timer timer_;
 
 public:
-  void effortCallback(const std_msgs::Int16MultiArray::ConstPtr &msg) {
+  void forceCallback(const raw_omni::OmniCommand::ConstPtr &msg) {
     std::cout << "Msg is arrived." << std::endl;
-    if (msg->data.size() >= 3) {
-      driver_.write_raw_effort(msg->data[0], msg->data[1], msg->data[2]);
-    }
-
+    driver_.enableForce(msg->enabled);
+    driver_.setForce(msg->force_x, msg->force_y, msg->force_z);
   }
 public:
     RawOmniNode(const std::string& name, const std::string& serial)
@@ -81,7 +81,7 @@ public:
         }
 
 	{
-	  effort_sub_ = n.subscribe("effort", 1000, &RawOmniNode::effortCallback, this);
+	  force_sub_ = n.subscribe("force", 1000, &RawOmniNode::forceCallback, this);
 	}
 
         // Create timer for communication.

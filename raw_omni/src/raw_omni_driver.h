@@ -23,6 +23,11 @@
 #include <libraw1394/raw1394.h>
 #include <pthread.h>
 
+
+const int16_t force_offset_ = 0x07FF;
+inline int16_t force_min_max(int16_t v) {
+  return ((v > force_offset_) ? force_offset_ : ((v) < -force_offset_)? -force_offset_ : (v));
+}
 class RawOmniDriver {
 private:
     struct TxIsoBuffer {
@@ -172,6 +177,11 @@ public:
 
 
     void write_raw_effort(const int16_t force_x, const int16_t force_y, const int16_t force_z);
+
+
+ public:
+    void enableForce(const bool flag);
+    void setForce(const float force_x, const float force_y, const float force_z);
 };
 
 #endif

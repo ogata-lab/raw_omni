@@ -473,12 +473,17 @@ std::vector<RawOmniDriver::OmniInfo> RawOmniDriver::enumerate_omnis()
 
 
 void RawOmniDriver::write_raw_effort(const int16_t force_x, const int16_t force_y, const int16_t force_z) {
-  // TODO: Here, force values are written to the IsoTxBuffer struct.
-  // The data may be transmitted by automatically and isochronously.
   std::cout << "RawOmniDriver::write_raw_effort(" << force_x << ", " << force_y << ", " << force_z << ")" << std::endl;
-  tx_iso_buffer_.force_x = 0x07ff - force_x;
-  tx_iso_buffer_.force_y = 0x07ff - force_y;
-  tx_iso_buffer_.force_z = 0x07ff - force_z;
-  tx_iso_buffer_.status.force_enabled = 1;
+  tx_iso_buffer_.force_x = 0x07ff - force_min_max(force_x);
+  tx_iso_buffer_.force_y = 0x07ff - force_min_max(force_y);
+  tx_iso_buffer_.force_z = 0x07ff - force_min_max(force_z);
   std::cout << " -- version 0001" << std::endl;
+}
+
+void RawOmniDriver::enableForce(const bool flag) {
+  tx_iso_buffer_.status.force_enabled = flag ? 1 : 0;
+}
+
+void RawOmniDriver::setForce(const float x, const float y, const float z) {
+  this->write_raw_effort(x * force_offset_, y * force_offset_, z * force_offset_);
 }
