@@ -47,6 +47,7 @@ public:
     driver_.enableForce(msg->enabled);
     driver_.setForce(msg->force_x, msg->force_y, msg->force_z);
   }
+
 public:
     RawOmniNode(const std::string& name, const std::string& serial)
             : name_(name), driver_(serial)

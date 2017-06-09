@@ -473,17 +473,22 @@ std::vector<RawOmniDriver::OmniInfo> RawOmniDriver::enumerate_omnis()
 
 
 void RawOmniDriver::write_raw_effort(const int16_t force_x, const int16_t force_y, const int16_t force_z) {
-  std::cout << "RawOmniDriver::write_raw_effort(" << force_x << ", " << force_y << ", " << force_z << ")" << std::endl;
-  tx_iso_buffer_.force_x = 0x07ff - force_min_max(force_x);
+
+  tx_iso_buffer_.force_x = 0x07ff + force_min_max(force_x);
   tx_iso_buffer_.force_y = 0x07ff - force_min_max(force_y);
-  tx_iso_buffer_.force_z = 0x07ff - force_min_max(force_z);
+  tx_iso_buffer_.force_z = 0x07ff + force_min_max(force_z);
+  std::cout << "RawOmniDriver::write_raw_effort(" 
+	    << tx_iso_buffer_.force_x << ", "
+	    << tx_iso_buffer_.force_y << ", "
+	    << tx_iso_buffer_.force_z << ")" << std::endl;
   std::cout << " -- version 0001" << std::endl;
 }
 
 void RawOmniDriver::enableForce(const bool flag) {
+  std::cout << "RawOmniDriver::enableForce(" << flag << ")" << std::endl;
   tx_iso_buffer_.status.force_enabled = flag ? 1 : 0;
 }
 
 void RawOmniDriver::setForce(const float x, const float y, const float z) {
-  this->write_raw_effort(x * force_offset_ / max_force_x, y * force_offset_ / max_force_y, z * force_offset_ / max_force_z);
+  this->write_raw_effort(force_offset_ * x / max_force_x, force_offset_ * y / max_force_y, force_offset_ * z / max_force_z);
 }
